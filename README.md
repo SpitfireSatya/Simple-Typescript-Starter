@@ -27,8 +27,8 @@ sts generate <project-name> <author>
 ```
 and you're done!!  
   
-*Note:* <project-name> cannot contain spaces and should be lower case.  
-*Note:* <author> cannot contain spaces.  
+*Note:* `<project-name>` cannot contain spaces and should be lower case.  
+*Note:* `<author>` cannot contain spaces.  
   
 To view the help and all available options, run:
 ```bash
