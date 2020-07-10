@@ -1,5 +1,5 @@
 
-# my-project
+# Simple Typescript Starter
 
 Package for generating a typescript scaffold with a bunch of reporters configured.  
   
