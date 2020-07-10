@@ -3,6 +3,7 @@
   "version": "1.0.2",
   "description": "Package for generating a typescript scaffold with a bunch of reporters configured",
   "main": "index.js",
+  "man": ["./doc.1"],
   "bin": {
     "bin": "index.js",
     "sts": "index.js"
@@ -10,13 +11,26 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpitfireSatya/Simple-Typescript-Starter.git"
+  },
   "keywords": [
+    "simple-typescript-starter",
+    "simple",
     "typescript",
-    "starter"
+    "starter",
+    "generator"
   ],
-  "author": "Spitfire",
+  "author": {
+    "name": "Spitfire",
+    "email": "twisterintwist@gmail.com"
+  },
   "license": "ISC",
-  "github": "https://github.com/SpitfireSatya/Simple-Typescript-Starter.git",
+  "bugs": {
+    "url": "https://github.com/SpitfireSatya/Simple-Typescript-Starter/issues"
+  },
+  "homepage": "https://github.com/SpitfireSatya/Simple-Typescript-Starter#readme",
   "dependencies": {
     "etl": "^0.6.12",
     "rimraf": "^3.0.2",
