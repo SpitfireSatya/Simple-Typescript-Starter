@@ -1,6 +1,6 @@
 {
   "name": "simple-typescript-starter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Package for generating a typescript scaffold with a bunch of reporters configured",
   "main": "index.js",
   "bin": {
