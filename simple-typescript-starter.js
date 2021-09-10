@@ -97,8 +97,9 @@
 
     await Promise.all([
       spawnProcess('npm', ['run', 'start']),
-      spawnProcess('npm', ['run', 'test']),
-      // spawnProcess('npm', ['run', 'karma']),
+      spawnProcess('npm', ['run', 'mocha']),
+      spawnProcess('npm', ['run', 'karma']),
+      spawnProcess('npm', ['run', 'jest']),
       spawnProcess('npm', ['run', 'lint']),
       spawnProcess('npm', ['run', 'jscpd']),
       spawnProcess('npm', ['run', 'docs'])
