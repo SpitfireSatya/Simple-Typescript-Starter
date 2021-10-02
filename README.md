@@ -6,7 +6,8 @@ Package for generating a typescript scaffold with a bunch of reporters configure
 This generates a customized Typescript 3.9 project which includes the following features:
 * Webpack bunding
 * Webpack bundle analyzer
-* Unit test with Mocha/Chai/Sinon
+* Unit test with Mocha/Chai/Sinon (with support for karma)
+* Unit testing with Jest
 * Coverage report with nyc
 * TSLint Html Report
 * Code Duplicity Html Report (with git integration)
