@@ -40,7 +40,10 @@
       `)
   }
 
-  if(['help', '--help', '-h'].includes(process.argv[2])) {
+  if(['version', '--version', '-v'].includes(process.argv[2])) {
+    console.log(require('./package.json').version);
+    process.exit(0);
+  } else if(['help', '--help', '-h'].includes(process.argv[2])) {
     printHelp();
     process.exit(0);
   } else if(process.argv[2] !== 'generate') {

@@ -36,9 +36,13 @@
   }
 
   async function cleanup() {
-    console.log(funkyLogger.color('red', 'Removing project files..'));
-    await rimraf(projectDir);
-    console.log(funkyLogger.color('red', 'Project clean-up complete'));
+    try {
+      console.log(funkyLogger.color('red', 'Removing project files..'));
+      await rimraf(projectDir);
+      console.log(funkyLogger.color('red', 'Project clean-up complete'));
+    } catch(e) {
+      console.log(funkyLogger.color('red', 'Error removing project: ', e));
+    }
   }
 
   function createIntermediateDirs() {
@@ -96,15 +100,16 @@
     console.log(funkyLogger.color('cyan', '\nThis may take some time. Please be patient.'));
 
     await Promise.all([
+      spawnProcess('npm', ['run', 'build:debug']),
+      spawnProcess('npm', ['run', 'build:analysis']),
       spawnProcess('npm', ['run', 'start']),
-      spawnProcess('npm', ['run', 'mocha']),
-      spawnProcess('npm', ['run', 'karma']),
-      spawnProcess('npm', ['run', 'jest']),
+      spawnProcess('npm', ['run', 'test']),
       spawnProcess('npm', ['run', 'lint']),
+      spawnProcess('npm', ['run', 'lint:fix']),
       spawnProcess('npm', ['run', 'jscpd']),
       spawnProcess('npm', ['run', 'docs'])
     ]).catch(async e => {
-      console.log(funkyLogger.color('red', 'Error in sanity checks: ' + e.message));
+      console.log(funkyLogger.color('red', 'Error in sanity checks: ' + e));
       await cleanup();
       process.exit(1);
     });
