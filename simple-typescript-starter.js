@@ -107,7 +107,8 @@
       spawnProcess('npm', ['run', 'lint']),
       spawnProcess('npm', ['run', 'lint:fix']),
       spawnProcess('npm', ['run', 'jscpd']),
-      spawnProcess('npm', ['run', 'docs'])
+      spawnProcess('npm', ['run', 'docs']),
+      spawnProcess('npm', ['run', 'zip'])
     ]).catch(async e => {
       console.log(funkyLogger.color('red', 'Error in sanity checks: ' + e));
       await cleanup();
