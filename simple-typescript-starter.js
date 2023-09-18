@@ -1,127 +1,43 @@
 (function() {
 
   'use strict';
-
-  const funkyLogger = require('./funky-logger');
-  const fs = require('fs');
-  const unzipper = require('unzipper');
-  const etl = require('etl');
   const path = require('path');
-  const util = require('util');
-  const rimraf = util.promisify(require('rimraf'));
-  const spawn = require('child_process').spawn;
+  const funkyLogger = require('./funky-logger');
+  const Help = require('./help');
+  const Generate = require('./generate');
 
-  const pathToArchive = path.resolve(__dirname, 'typescript-starter.zip');
-  let projectDir = '';
 
-  function spawnProcess(cmd, args, options) {
-    return new Promise((resolve, reject) => {
-      const options = { cwd: projectDir, shell: true };
-
-      const child = spawn(cmd, args, options);
-      
-      child.stdout.on('data', (data) => {
-        console.log(data.toString());
-      });
-      
-      child.stderr.on('data', (data) => {
-        console.error(data.toString());
-      });
-      
-      child.on('close', (code) => {
-        code === 0 ? resolve() : reject(); 
-      });
-
-    });
+  function printHelp() {
+    new Help().printHelp();
+    process.exit(0);
   }
 
-  async function cleanup() {
-    try {
-      console.log(funkyLogger.color('red', 'Removing project files..'));
-      await rimraf(projectDir);
-      console.log(funkyLogger.color('red', 'Project clean-up complete'));
-    } catch(e) {
-      console.log(funkyLogger.color('red', 'Error removing project: ', e));
-    }
+  function printVersion() {
+    new Help().printVersion();
+    process.exit(0);
   }
 
-  function createIntermediateDirs() {
-    return Promise.all([
-      fs.promises.mkdir(path.resolve(projectDir, 'scripts')),
-      fs.promises.mkdir(path.resolve(projectDir, 'src')),
-      fs.promises.mkdir(path.resolve(projectDir, 'reports')),
-      fs.promises.mkdir(path.resolve(projectDir, 'documentation'))
-    ]);
-  }
+  async function generate(config) {
+    const gen = new Generate(config);
+    await gen.extractContents();
+    await gen.installNodeModules();
+    await gen.runSanityCheck();
 
-  async function extractContents(projectName, author) {
-    projectDir = path.resolve(process.cwd(), projectName);
-    if(fs.existsSync(projectDir)) {
-      console.log(funkyLogger.color('red', `\nFolder ${projectName} already exists! \nPlease delete the existing folder or use another name.`));
-      process.exit(1);
-    }
-    await fs.promises.mkdir(projectDir);
-    await createIntermediateDirs(projectDir);
-    await fs.createReadStream(pathToArchive)
-      .pipe(unzipper.Parse())
-      .pipe(etl.map(async entry => {
-        if(entry.type === 'File') {
-          console.log(funkyLogger.color('magenta', 'Writing file: '), funkyLogger.color('cyan', entry.path));
-          let content = await entry.buffer();
-          content = content.toString().replace(/{projectName}/g, projectName);
-          content = content.toString().replace(/{author}/g, author);
-          await fs.promises.writeFile(path.resolve(projectDir, entry.path), content);
-          console.log(funkyLogger.color('magenta', 'File write complete: '), funkyLogger.color('green', entry.path));
-        }
-      }))
-      .promise()
-      .catch(async e => {
-        console.log(funkyLogger.color('red', 'Error extracting source: ' + e.message));
-        await cleanup();
-        process.exit(1);
-      });
+    console.log(funkyLogger.color('green', '\nProject set-up completed.'));
+    console.log(funkyLogger.color('cyan', '\nProject generated at: '), funkyLogger.color('magenta', path.resolve(process.cwd(), config.projectName)));
+    console.log(funkyLogger.color('green', '\n\nHappy Coding!! ^_^'));
 
   }
 
-  async function installNodeModules() {
-    console.log(funkyLogger.color('cyan', '\nInstalling node modules...'));
-    console.log(funkyLogger.color('cyan', '\nThis may take some time. Please be patient.'));
-    await spawnProcess('npm', ['install'])
-      .catch(async e => {
-        console.log(funkyLogger.color('red', 'Error installing node modules: ' + e.message));
-        await cleanup();
-        process.exit(1);
-      });
-    console.log(funkyLogger.color('green', '\nNode Modules Installed!'));
-  }
-
-  async function runSanityCheck() {
-    console.log(funkyLogger.color('cyan', '\nRunning Sanity checks to ensure set-up was successful...'));
-    console.log(funkyLogger.color('cyan', '\nThis may take some time. Please be patient.'));
-
-    await Promise.all([
-      spawnProcess('npm', ['run', 'build:debug']),
-      spawnProcess('npm', ['run', 'build:analysis']),
-      spawnProcess('npm', ['run', 'start']),
-      spawnProcess('npm', ['run', 'test']),
-      spawnProcess('npm', ['run', 'lint']),
-      spawnProcess('npm', ['run', 'lint:fix']),
-      spawnProcess('npm', ['run', 'jscpd']),
-      spawnProcess('npm', ['run', 'docs']),
-      spawnProcess('npm', ['run', 'zip'])
-    ]).catch(async e => {
-      console.log(funkyLogger.color('red', 'Error in sanity checks: ' + e));
-      await cleanup();
-      process.exit(1);
-    });
-
-    console.log(funkyLogger.color('green', '\nAll Sanity Checks Completed!'));
+  async function migrate(config) {
+    throw new Error('NYI');
   }
 
   module.exports = {
-    extractContents,
-    installNodeModules,
-    runSanityCheck
+    printHelp: printHelp,
+    printVersion: printVersion,
+    generate: generate,
+    migrate, migrate
   };
 
 }());
