@@ -13,6 +13,7 @@
         //  This module currently supports only 2 commands:                                //
         //    1) sts help/--help/-h                                                        //
         //    2) sts generate                                                              //
+        //    2) sts migrate                                                               //
         //                                                                                 //
         //  1) sts help                                                                    //
         //    "sts help" is used to generate this help message                             //
@@ -29,6 +30,16 @@
         //                                                                                 //
         //    Note: These properties can be modified manually after creating the project   //
         //                                                                                 //
+        //  3) sts migrate                                                                 //
+        //    "sts migrate" is used to migrate an existing typescript project to           //
+        //     the currently installed STS version.                                        //
+        //                                                                                 //
+        //    Usage:                                                                       //
+        //          sts migrate <project-path>                                             //
+        //    where,                                                                       //
+        //          <project-path> is the relative path to the project you wish            //
+        //          to migrate. The argument is optional                                   //
+        //    default value is current working directory                                   //
         //                                                                                 //
         /////////////////////////////////////////////////////////////////////////////////////
         `;

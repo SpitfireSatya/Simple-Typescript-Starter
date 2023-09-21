@@ -16,13 +16,13 @@
     const self = this;
 
     self.pathToArchive = config.pathToArchive;
-    self.projectDir = config.projectDir;
+    self.projectPath = config.projectPath;
     self.projectName = config.projectName;
     self.author = config.author;
 
     function spawnProcess(cmd, args) {
       return new Promise((resolve, reject) => {
-        const options = { cwd: self.projectDir, shell: true };
+        const options = { cwd: self.projectPath, shell: true };
 
         const child = spawn(cmd, args, options);
 
@@ -44,7 +44,7 @@
     async function cleanup() {
       try {
         console.log(funkyLogger.color('red', 'Removing project files..'));
-        await rimraf(self.projectDir);
+        await rimraf(self.projectPath);
         console.log(funkyLogger.color('red', 'Project clean-up complete'));
       } catch (e) {
         console.log(funkyLogger.color('red', 'Error removing project: ', e));
@@ -53,21 +53,21 @@
 
     function createIntermediateDirs() {
       return Promise.all([
-        fs.promises.mkdir(path.resolve(self.projectDir, 'scripts')),
-        fs.promises.mkdir(path.resolve(self.projectDir, 'src')),
-        fs.promises.mkdir(path.resolve(self.projectDir, 'reports')),
-        fs.promises.mkdir(path.resolve(self.projectDir, 'documentation'))
+        fs.promises.mkdir(path.resolve(self.projectPath, 'scripts')),
+        fs.promises.mkdir(path.resolve(self.projectPath, 'src')),
+        fs.promises.mkdir(path.resolve(self.projectPath, 'reports')),
+        fs.promises.mkdir(path.resolve(self.projectPath, 'documentation'))
       ]);
     }
 
     async function extractContents() {
-      self.projectDir = path.resolve(process.cwd(), self.projectName);
-      if (fs.existsSync(self.projectDir)) {
+      self.projectPath = path.resolve(process.cwd(), self.projectName);
+      if (fs.existsSync(self.projectPath)) {
         console.log(funkyLogger.color('red', `\nFolder ${self.projectName} already exists! \nPlease delete the existing folder or use another name.`));
         process.exit(1);
       }
-      await fs.promises.mkdir(self.projectDir);
-      await createIntermediateDirs(self.projectDir);
+      await fs.promises.mkdir(self.projectPath);
+      await createIntermediateDirs(self.projectPath);
       await fs.createReadStream(self.pathToArchive)
         .pipe(unzipper.Parse())
         .pipe(etl.map(async entry => {
@@ -76,7 +76,7 @@
             let content = await entry.buffer();
             content = content.toString().replace(/{projectName}/g, self.projectName);
             content = content.toString().replace(/{author}/g, self.author);
-            await fs.promises.writeFile(path.resolve(self.projectDir, entry.path), content);
+            await fs.promises.writeFile(path.resolve(self.projectPath, entry.path), content);
             console.log(funkyLogger.color('magenta', 'File write complete: '), funkyLogger.color('green', entry.path));
           }
         }))

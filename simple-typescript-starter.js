@@ -5,6 +5,7 @@
   const funkyLogger = require('./funky-logger');
   const Help = require('./help');
   const Generate = require('./generate');
+  const Migrate = require('./migrate');
 
 
   function printHelp() {
@@ -30,7 +31,17 @@
   }
 
   async function migrate(config) {
-    throw new Error('NYI');
+    const mig = new Migrate(config);
+    await mig.prepareForBackup();
+    await mig.createBackup();
+    await mig.prepareForMigration();
+    await mig.extractContents();
+    await mig.installNodeModules();
+    await mig.runSanityCheck();
+
+    console.log(funkyLogger.color('green', '\nProject migration completed.'));
+    console.log(funkyLogger.color('cyan', '\nNew commands can be found at: '), funkyLogger.color('magenta', path.resolve(config.projectPath, 'README.new.md')));
+    console.log(funkyLogger.color('green', '\n\nHappy Coding!! ^_^'));
   }
 
   module.exports = {

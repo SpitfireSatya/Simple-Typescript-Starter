@@ -60,9 +60,10 @@ const funkyLogger = require('./funky-logger');
 
       if(!args[3]) {
         console.log(funkyLogger.color('yellow', `\nNo project path specified. Assuming default relative path ${process.cwd()}\n`));
+        config.projectPath = path.resolve(process.cwd());  
+      } else {
+        config.projectPath = path.resolve(process.cwd(), args[3]);
       }
-
-      config.projectPath = args[3] || process.cwd();
 
     }
 
