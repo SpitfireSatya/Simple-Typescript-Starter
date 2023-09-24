@@ -18,10 +18,10 @@
     case 'help':
       sts.printHelp();
     case 'generate':
-      sts.generate(config);
+      await sts.generate(config);
       break;
     case 'migrate':
-      sts.migrate(config);
+      await sts.migrate(config);
       break;
     default:
       console.log(funkyLogger.color('red', 'Unknown command: '), funkyLogger.color('red', process.argv[2]));
